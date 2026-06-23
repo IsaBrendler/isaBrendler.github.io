@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project — Isadora Brendler</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body class="project-body">
+
+  <main class="project-template">
+    <a class="project-template__back" href="index.html">← Back to canvas</a>
+
+    <header class="project-template__header">
+      <h1 class="project-template__title" id="project-title"></h1>
+      <blockquote class="project-template__quote" id="project-quote"></blockquote>
+    </header>
+
+    <section class="project-template__split">
+      <div class="project-template__media project-template__media--wide" id="split-image"></div>
+      <div class="project-template__copy">
+        <h2 id="section1-title"></h2>
+        <p class="project-template__serif" id="section1-body"></p>
+      </div>
+    </section>
+
+    <section class="project-template__hero-media">
+      <div class="project-template__video" id="project-video">
+        <span class="project-template__play" aria-hidden="true"></span>
+      </div>
+    </section>
+
+    <section class="project-template__grid">
+      <div class="project-template__grid-left">
+        <div class="project-template__mini-row">
+          <div class="project-template__media project-template__media--square" id="grid-small"></div>
+          <div class="project-template__copy project-template__copy--compact">
+            <h2 id="section2-title"></h2>
+            <p class="project-template__serif" id="section2-quote"></p>
+          </div>
+        </div>
+        <div class="project-template__media project-template__media--landscape" id="grid-landscape"></div>
+      </div>
+      <div class="project-template__grid-right">
+        <div class="project-template__media project-template__media--tall" id="grid-tall"></div>
+      </div>
+    </section>
+
+    <blockquote class="project-template__closing" id="project-closing"></blockquote>
+
+    <a class="project-template__link" id="project-link" hidden></a>
+  </main>
+
+  <script src="projects.js"></script>
+</body>
+</html>
