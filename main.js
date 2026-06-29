@@ -114,37 +114,23 @@ function randomPositionOutsideSidebar(item) {
   };
 }
 
-function layoutMobileTwoColumns() {
-  const items = [...document.querySelectorAll(".draggable")];
-  const gap = 20;
-  const margin = SAFE_MARGIN;
-  const canvasWidth = canvas.clientWidth;
-  const colWidth = (canvasWidth - margin * 2 - gap) / 2;
+function layoutMobileCarousel() {
+  // CSS handles all positioning via flex + scroll-snap.
+  // Just reset any inline styles that desktop may have set.
+  document.querySelectorAll(".draggable").forEach((item) => {
+    item.style.left = "";
+    item.style.top = "";
+  });
 
-  let rowY = margin;
-
-  for (let i = 0; i < items.length; i += 2) {
-    const rowItems = items.slice(i, i + 2);
-    const rowHeight = Math.max(...rowItems.map((el) => el.offsetHeight));
-
-    rowItems.forEach((item, col) => {
-      const cellX = margin + col * (colWidth + gap);
-      const x = cellX + Math.max(0, (colWidth - item.offsetWidth) / 2);
-      item.style.left = `${x}px`;
-      item.style.top = `${rowY}px`;
-    });
-
-    rowY += rowHeight + gap;
-  }
-
-  canvas.style.minHeight = `${rowY + margin}px`;
+  // Sync dots if present
+  updateCarouselDots();
 }
 
 function relocateIfOverSidebar(item) {
   if (!isOverlappingSidebar(item)) return false;
 
   if (isMobile()) {
-    layoutMobileTwoColumns();
+    layoutMobileCarousel();
   } else {
     const { x, y } = randomPositionOutsideSidebar(item);
     item.style.left = `${x}px`;
@@ -244,7 +230,7 @@ window.addEventListener("resize", () => {
   wasMobile = mobile;
 
   if (mobile) {
-    layoutMobileTwoColumns();
+    layoutMobileCarousel();
   } else {
     // Reset inline coordinates to let default % coordinates adjust
     document.querySelectorAll(".draggable").forEach((item) => {
@@ -290,8 +276,51 @@ copyBtn?.addEventListener("click", async () => {
 /* Convert % initial positions to px on first load (desktop only) */
 window.addEventListener("load", () => {
   if (isMobile()) {
-    layoutMobileTwoColumns();
+    initCarouselDots();
+    layoutMobileCarousel();
     return;
   }
   convertPercentagesToPixels();
 });
+
+/* ===== CAROUSEL DOTS ===== */
+function initCarouselDots() {
+  if (!isMobile()) return;
+
+  // Create dots container if not already present
+  let dotsEl = document.querySelector(".carousel-dots");
+  if (!dotsEl) {
+    dotsEl = document.createElement("div");
+    dotsEl.className = "carousel-dots";
+    document.body.appendChild(dotsEl);
+  }
+
+  const items = [...document.querySelectorAll(".draggable:not(.is-dimmed)")];
+  dotsEl.innerHTML = items.map((_, i) =>
+    `<div class="carousel-dot${i === 0 ? " is-active" : ""}"></div>`
+  ).join("");
+
+  canvas.addEventListener("scroll", () => {
+    updateCarouselDots();
+  }, { passive: true });
+}
+
+function updateCarouselDots() {
+  if (!isMobile()) return;
+  const dotsEl = document.querySelector(".carousel-dots");
+  if (!dotsEl) return;
+
+  const items = [...document.querySelectorAll(".draggable:not(.is-dimmed)")];
+  const dots = [...dotsEl.querySelectorAll(".carousel-dot")];
+  const canvasCenter = canvas.scrollLeft + canvas.clientWidth / 2;
+
+  let closestIdx = 0;
+  let minDist = Infinity;
+  items.forEach((item, i) => {
+    const itemCenter = item.offsetLeft + item.offsetWidth / 2;
+    const dist = Math.abs(itemCenter - canvasCenter);
+    if (dist < minDist) { minDist = dist; closestIdx = i; }
+  });
+
+  dots.forEach((dot, i) => dot.classList.toggle("is-active", i === closestIdx));
+}
