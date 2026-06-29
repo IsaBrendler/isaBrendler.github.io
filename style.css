@@ -437,10 +437,6 @@ button {
     pointer-events: auto;
   }
 
-  .sidebar__photo {
-    display: none;
-  }
-
   .sidebar__bio {
     font-size: 0.95rem;
     margin-bottom: 8px;
