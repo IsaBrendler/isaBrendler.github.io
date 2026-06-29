@@ -1,9 +1,9 @@
-/* Drag and drop — positions relative to viewport */
+/* Drag and drop â€” positions relative to viewport */
 const canvas = document.getElementById("canvas");
 let zTop = 10;
 let activeDrag = null;
 
-/* Clock dial 10:00 → 2:00 (12 = 0°, each minute = 0.5°) → -60° to +60° */
+/* Clock dial 10:00 â†’ 2:00 (12 = 0Â°, each minute = 0.5Â°) â†’ -60Â° to +60Â° */
 const ROTATION_MIN = -60;
 const ROTATION_MAX = 60;
 const CLOCK_SPAN_MINUTES = 4 * 60;
@@ -163,6 +163,7 @@ document.querySelectorAll(".draggable").forEach((item) => {
 
   item.addEventListener("pointerdown", (e) => {
     if (e.button !== 0) return;
+    if (isMobile()) return;
     activeDrag = item;
     isDragging = false;
     startX = e.clientX;
@@ -176,6 +177,7 @@ document.querySelectorAll(".draggable").forEach((item) => {
 
   item.addEventListener("pointermove", (e) => {
     if (activeDrag !== item) return;
+    if (isMobile()) return;
 
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
