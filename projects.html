@@ -6,54 +6,61 @@
   <title>Project — Isadora Brendler</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="project.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="project.css?v=6" />
 </head>
 <body class="project-body">
 
   <main class="project-template">
-    <a class="project-template__back" href="index.html">← Back to canvas</a>
+    <a class="project-template__back" href="index.html">← Back to home</a>
 
-    <header class="project-template__header">
-      <h1 class="project-template__title" id="project-title"></h1>
-      <blockquote class="project-template__quote" id="project-quote"></blockquote>
-    </header>
-
-    <section class="project-template__split">
-      <div class="project-template__media project-template__media--wide" id="split-image"></div>
+    <!-- Top section: Title/Subtitle + Main Image -->
+    <section class="project-template__split project-template__split--intro">
       <div class="project-template__copy">
+        <h1 class="project-template__title" id="project-title"></h1>
+        <p class="project-template__subtitle" id="project-subtitle"></p>
+      </div>
+      <div class="project-template__media project-template__media--wide" id="split-image"></div>
+    </section>
+
+    <!-- Metadata: Activities & Skills -->
+    <section class="project-template__metadata" id="project-metadata" hidden>
+      <div class="project-metadata__block" id="project-metadata-activities-block" hidden>
+        <h3 class="project-metadata__title">Activities &amp; Responsibilities</h3>
+        <ul class="project-metadata__list" id="project-metadata-activities"></ul>
+      </div>
+      <div class="project-metadata__block" id="project-metadata-skills-block" hidden>
+        <h3 class="project-metadata__title">Skills Involved</h3>
+        <div class="project-metadata__skills" id="project-metadata-skills"></div>
+      </div>
+    </section>
+
+    <!-- Description Copy Section (Mixed with Showcase screenshots) -->
+    <section class="project-template__description-cols">
+      <div class="project-template__desc-col">
         <h2 id="section1-title"></h2>
         <p class="project-template__serif" id="section1-body"></p>
+        <div class="project-template__showcase-media" id="showcase-img-1" hidden></div>
+      </div>
+      <div class="project-template__desc-col" id="section2-col" hidden>
+        <h2 id="section2-title"></h2>
+        <p class="project-template__serif" id="section3-body"></p>
+        <div class="project-template__showcase-media" id="showcase-img-2" hidden></div>
       </div>
     </section>
 
-    <section class="project-template__hero-media">
-      <div class="project-template__video" id="project-video">
-        <span class="project-template__play" aria-hidden="true"></span>
-      </div>
-    </section>
-
-    <section class="project-template__grid">
-      <div class="project-template__grid-left">
-        <div class="project-template__mini-row">
-          <div class="project-template__media project-template__media--square" id="grid-small"></div>
-          <div class="project-template__copy project-template__copy--compact">
-            <h2 id="section2-title"></h2>
-            <p class="project-template__serif" id="section2-quote"></p>
-          </div>
-        </div>
-        <div class="project-template__media project-template__media--landscape" id="grid-landscape"></div>
-      </div>
-      <div class="project-template__grid-right">
-        <div class="project-template__media project-template__media--tall" id="grid-tall"></div>
-      </div>
-    </section>
-
-    <blockquote class="project-template__closing" id="project-closing"></blockquote>
+    <!-- Screenshots Gallery -->
+    <section class="project-template__gallery" id="project-gallery" hidden></section>
 
     <a class="project-template__link" id="project-link" hidden></a>
   </main>
 
-  <script src="projects.js"></script>
+  <!-- Lightbox Modal -->
+  <div class="project-template__lightbox" id="lightbox" aria-hidden="true">
+    <button class="project-template__lightbox-close" id="lightbox-close" aria-label="Close image">&times;</button>
+    <img class="project-template__lightbox-img" id="lightbox-img" src="" alt="" />
+  </div>
+
+  <script src="projects.js?v=6"></script>
 </body>
 </html>

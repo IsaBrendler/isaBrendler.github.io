@@ -8,7 +8,7 @@ const ROTATION_MIN = -60;
 const ROTATION_MAX = 60;
 const CLOCK_SPAN_MINUTES = 4 * 60;
 
-const STRAIGHT_ROTATION_IDS = new Set(["archive", "numo", "home"]);
+const STRAIGHT_ROTATION_IDS = new Set(["archive", "numo", "wwdc24"]);
 
 function randomRotation() {
   const offsetMinutes = Math.floor(Math.random() * (CLOCK_SPAN_MINUTES + 1));
@@ -31,31 +31,9 @@ function applyRotation(item, deg) {
 const ROTATION_CLOCK_KEY = "canvas-rotation-clock-10-2";
 
 function initRotations() {
-  const migrated = localStorage.getItem(ROTATION_CLOCK_KEY) === "1";
-  let changed = false;
-
   document.querySelectorAll(".draggable").forEach((item) => {
-    if (isStraightRotation(item)) {
-      const current = item.style.getPropertyValue("--rotate");
-      if (!current || parseFloat(current) !== 0) {
-        applyRotation(item, 0);
-        changed = true;
-      }
-      return;
-    }
-
-    const current = item.style.getPropertyValue("--rotate");
-    const deg = current ? parseFloat(current) : NaN;
-    const outOfRange = !current || deg < ROTATION_MIN || deg > ROTATION_MAX;
-
-    if (!migrated || outOfRange) {
-      applyRotation(item, randomRotation());
-      changed = true;
-    }
+    applyRotation(item, 0);
   });
-
-  localStorage.setItem(ROTATION_CLOCK_KEY, "1");
-  if (changed) savePositions();
 }
 
 const DRAG_THRESHOLD = 8;
@@ -224,7 +202,11 @@ document.querySelectorAll(".draggable").forEach((item) => {
     } else {
       const href = item.dataset.href;
       if (href) {
-        window.location.href = href;
+        if (href.startsWith("http")) {
+          window.open(href, "_blank");
+        } else {
+          window.location.href = href;
+        }
       }
     }
 
@@ -239,37 +221,19 @@ document.querySelectorAll(".draggable").forEach((item) => {
   item.addEventListener("pointercancel", endPointer);
 });
 
-function savePositions() {
-  const positions = {};
-  document.querySelectorAll(".draggable").forEach((item) => {
-    const rotate = item.style.getPropertyValue("--rotate").trim();
-    positions[item.dataset.id] = {
-      left: item.style.left,
-      top: item.style.top,
-      rotate: rotate || undefined,
-    };
-  });
-  localStorage.setItem(positionsKey(), JSON.stringify(positions));
-}
+function savePositions() {}
+function loadPositions() { return false; }
 
-function loadPositions() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(positionsKey()));
-    if (!saved) return false;
-    document.querySelectorAll(".draggable").forEach((item) => {
-      const pos = saved[item.dataset.id];
-      if (pos?.left) item.style.left = pos.left;
-      if (pos?.top) item.style.top = pos.top;
-      if (pos?.rotate) applyRotation(item, parseFloat(pos.rotate));
-    });
-    return true;
-  } catch (_) {
-    return false;
-  }
-}
-
-const hadSavedPositions = loadPositions();
 initRotations();
+
+function convertPercentagesToPixels() {
+  document.querySelectorAll(".draggable").forEach((item) => {
+    const canvasRect = getCanvasRect();
+    const rect = item.getBoundingClientRect();
+    item.style.left = `${rect.left - canvasRect.left}px`;
+    item.style.top = `${rect.top - canvasRect.top}px`;
+  });
+}
 
 let wasMobile = isMobile();
 window.addEventListener("resize", () => {
@@ -280,20 +244,13 @@ window.addEventListener("resize", () => {
   if (mobile) {
     layoutMobileTwoColumns();
   } else {
-    loadPositions();
+    // Reset inline coordinates to let default % coordinates adjust
+    document.querySelectorAll(".draggable").forEach((item) => {
+      item.style.left = "";
+      item.style.top = "";
+    });
+    convertPercentagesToPixels();
   }
-  savePositions();
-});
-
-/* + info toggle */
-const infoToggle = document.getElementById("info-toggle");
-const infoPanel = document.getElementById("info-panel");
-
-infoToggle?.addEventListener("click", () => {
-  const open = infoPanel.hidden;
-  infoPanel.hidden = !open;
-  infoToggle.setAttribute("aria-expanded", String(open));
-  infoToggle.textContent = open ? "− info" : "+ info";
 });
 
 /* Nav filter */
@@ -306,7 +263,8 @@ document.querySelectorAll(".nav__link").forEach((link) => {
     link.classList.add("is-active");
 
     document.querySelectorAll(".draggable").forEach((item) => {
-      const match = item.dataset.category === filter;
+      const categories = (item.dataset.category || "").split(" ");
+      const match = filter === "all" || categories.includes(filter);
       item.classList.toggle("is-dimmed", !match);
     });
   });
@@ -330,20 +288,8 @@ copyBtn?.addEventListener("click", async () => {
 /* Convert % initial positions to px on first load (desktop only) */
 window.addEventListener("load", () => {
   if (isMobile()) {
-    if (!hadSavedPositions) {
-      layoutMobileTwoColumns();
-      savePositions();
-    }
+    layoutMobileTwoColumns();
     return;
   }
-
-  if (localStorage.getItem(positionsKey())) return;
-
-  document.querySelectorAll(".draggable").forEach((item) => {
-    const canvasRect = getCanvasRect();
-    const rect = item.getBoundingClientRect();
-    item.style.left = `${rect.left - canvasRect.left}px`;
-    item.style.top = `${rect.top - canvasRect.top}px`;
-  });
-  savePositions();
+  convertPercentagesToPixels();
 });

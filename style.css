@@ -93,8 +93,8 @@ button {
 }
 
 .sidebar__photo {
-  width: 120px;
-  height: 120px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   margin-bottom: 24px;
   border-radius: 4px;
   overflow: hidden;
@@ -135,7 +135,6 @@ button {
 }
 
 .sidebar__extra {
-  margin-top: -32px;
   margin-bottom: 40px;
   padding-bottom: 8px;
 }
@@ -286,7 +285,7 @@ button {
 
 .draggable--bilou {
   width: 250px;
-  height: 420px;
+  height: 250px;
 }
 
 .draggable--talq {
@@ -294,27 +293,34 @@ button {
   height: 170px;
 }
 
-.draggable--home {
-  width: 280px;
-  height: 280px;
-}
-
 .draggable--numo {
   width: 320px;
   height: 210px;
+}
+
+.draggable--wwdc24 {
+  width: 260px;
+  height: 260px;
 }
 
 .draggable--archive .draggable__placeholder,
 .draggable--daru .draggable__placeholder,
 .draggable--bilou .draggable__placeholder,
 .draggable--talq .draggable__placeholder,
-.draggable--home .draggable__placeholder {
+.draggable--wwdc24 .draggable__placeholder {
   border-radius: 8px;
 }
 
 .draggable--numo .draggable__img {
   object-fit: contain;
   padding: 8px;
+  background: transparent;
+}
+
+.draggable--wwdc24 .draggable__img {
+  object-fit: contain;
+  padding: 8px;
+  background: transparent;
 }
 
 .draggable--numo .draggable__placeholder {
@@ -323,52 +329,62 @@ button {
   color: #1e3a6e;
 }
 
-/* ===== PROJECT NOTES ===== */
+/* ===== PROJECT NOTES (LABELS BELOW IMAGES) ===== */
 .project-note {
   position: absolute;
   pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  z-index: 20;
-  max-width: 200px;
-  transition: opacity 0.28s ease, transform 0.28s ease, visibility 0.28s;
-}
-
-.draggable:hover:not(.is-dragging) .project-note {
   opacity: 1;
   visibility: visible;
+  z-index: 20;
+  max-width: 200px;
 }
 
 .project-note__title {
   font-family: var(--sans);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  margin-bottom: 5px;
-}
-
-.project-note__text {
-  font-family: var(--sans);
   font-size: 0.75rem;
-  line-height: 1.45;
-  color: #333;
-  font-weight: 400;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin: 0;
+  text-align: center;
 }
 
 .project-note--torn {
-  top: -4px;
-  right: -10px;
-  padding: 14px 16px 12px 12px;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%) rotate(calc(-1 * var(--rotate, 0deg))) scale(0.95);
+  padding: 8px 16px;
   background: #fffef8;
-  box-shadow: 2px 4px 14px rgba(0, 0, 0, 0.08);
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.06);
   clip-path: polygon(0% 0%, 100% 0%, 100% 72%, 78% 100%, 0% 100%);
-  transform: rotate(3deg) scale(0.92);
   border: 1px solid rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.project-note__desc {
+  font-family: var(--sans);
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: center;
+  margin: 0;
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity 0.22s ease, max-height 0.22s ease, margin-top 0.22s ease;
 }
 
 .draggable:hover:not(.is-dragging) .project-note--torn {
-  transform: rotate(1deg) scale(1);
+  transform: translateX(-50%) rotate(calc(-1 * var(--rotate, 0deg))) scale(1.05);
+  box-shadow: 4px 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.draggable:hover:not(.is-dragging) .project-note__desc {
+  max-height: 30px;
+  opacity: 1;
+  margin-top: 6px;
 }
 
 /* Toast */
@@ -444,3 +460,5 @@ button {
     transition: none !important;
   }
 }
+
+
